@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend
+    env_file: ../.env.backend
+    environment:
+      NOVA_BACKEND_HOST: 0.0.0.0
+      NOVA_BACKEND_STATE_DIR: /data
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4319:4319"
+    volumes:
+      - nova-backend-state:/data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  nova-backend-state:

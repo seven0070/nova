@@ -1,0 +1,4 @@
+'use client';import Markdown from 'react-markdown';import remarkGfm from 'remark-gfm';import rehypeHighlight from 'rehype-highlight';import {useState} from 'react';
+function plaintext(node:any):string{return typeof node==='string'?node:Array.isArray(node)?node.map(plaintext).join(''):node?.props?plaintext(node.props.children):'';}
+function Code({children,...props}:any){const [copied,setCopied]=useState(false);return <div className="codeblock"><button onClick={async()=>{const text=plaintext(children);await navigator.clipboard.writeText(text);setCopied(true);}}> {copied?'Copied':'Copy code'}</button><pre {...props}>{children}</pre></div>;}
+export default function MarkdownAnswer({text}:{text:string}){return <div className="markdown"><Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]} components={{pre:Code,a:({children,...props})=><a {...props} target="_blank" rel="noopener noreferrer">{children}</a>}}>{text}</Markdown></div>;}

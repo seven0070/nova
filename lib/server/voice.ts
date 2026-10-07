@@ -1,0 +1,5 @@
+import {get,set} from './state';import {connection} from './vault';import {defaultVoice,validateVoice,synthesize,type VoiceSettings} from '../agent/voice';
+export async function voiceSettings(who:string){return validateVoice((await get<VoiceSettings>(who,'sys:voice-settings'))?.value||defaultVoice);}
+export async function saveVoiceSettings(who:string,input:any){const settings=validateVoice(input);if(settings.connectionId){const c=await connection(who,settings.connectionId);if(c.kind!=='speech')throw new Error('Choose a saved speech connection');}await set(who,'sys:voice-settings',settings);return settings;}
+export async function speechConnection(who:string,id:string){if(!id)throw new Error('Save and select a speech provider connection first');const c=await connection(who,id);if(c.kind!=='speech')throw new Error('Not a speech connection');return c;}
+export async function speak(who:string,text:string,signal:AbortSignal){const settings=await voiceSettings(who);return synthesize(text,await speechConnection(who,settings.connectionId),settings,signal);}

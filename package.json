@@ -1,0 +1,49 @@
+{
+  "name": "nova-ai-chat",
+  "version": "0.11.0",
+  "private": true,
+  "description": "A personal AI workspace with bring-your-own-provider connections",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "npm run worker:build && next build --webpack",
+    "start": "next start --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run worker:build && node --test tests/*.test.mjs",
+    "worker:build": "tsc -p tsconfig.worker.json",
+    "worker": "node --env-file=.env.worker .worker/worker/main.js",
+    "cli": "node bin/nova.cjs",
+    "gateway": "node --env-file=.env.worker .worker/worker/gateway.js",
+    "cli:legacy": "node --env-file=.env.worker .worker/worker/cli.js",
+    "backend": "node --env-file=.env.backend bin/nova.cjs backend",
+    "cli:package": "npm run worker:build && node scripts/package-cli.mjs",
+    "predev": "node scripts/prepare-assets.mjs",
+    "prebuild": "node scripts/prepare-assets.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "ajv": "^8.20.0",
+    "diff": "^9.0.0",
+    "lucide-react": "1.31.0",
+    "mammoth": "^1.13.0",
+    "next": "16.3.4",
+    "pdfjs-dist": "^6.4.299",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3"
+  },
+  "bin": {
+    "nova": "bin/nova.cjs"
+  }
+}

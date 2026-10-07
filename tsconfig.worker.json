@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": ".worker",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "worker/**/*.ts",
+    "lib/agent/backup*.ts",
+    "app/api/chats/route.ts",
+    "app/api/services/route.ts",
+    "app/api/tasks/route.ts",
+    "app/api/backup/route.ts",
+    "app/api/runner/route.ts",
+    "lib/agent/voice.ts",
+    "app/api/model-router/route.ts",
+    "app/api/voice/route.ts",
+    "app/api/provider/route.ts",
+    "app/api/transcribe/route.ts",
+    "app/api/connections/route.ts",
+    "app/api/device-hub/route.ts",
+    "app/api/learning/route.ts",
+    "app/api/realtime/route.ts"
+  ]
+}
