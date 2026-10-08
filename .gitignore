@@ -22,3 +22,6 @@ public/pdf.worker.min.mjs
 
 
 .nova-setup/
+
+apps/desktop/runtime/
+apps/desktop/release/

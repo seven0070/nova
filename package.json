@@ -1,6 +1,6 @@
 {
   "name": "nova-ai-chat",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "private": true,
   "description": "A personal AI workspace with bring-your-own-provider connections",
   "engines": {
@@ -20,7 +20,10 @@
     "backend": "node --env-file=.env.backend bin/nova.cjs backend",
     "cli:package": "npm run worker:build && node scripts/package-cli.mjs",
     "predev": "node scripts/prepare-assets.mjs",
-    "prebuild": "node scripts/prepare-assets.mjs"
+    "prebuild": "node scripts/prepare-assets.mjs",
+    "desktop:stage": "npm run worker:build && node scripts/stage-desktop.mjs",
+    "desktop:dev": "npm run desktop:stage && npm --prefix apps/desktop start",
+    "desktop:package": "npm run desktop:stage && npm --prefix apps/desktop run package"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
@@ -47,4 +50,3 @@
     "nova": "bin/nova.cjs"
   }
 }
-

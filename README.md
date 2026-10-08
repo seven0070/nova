@@ -179,3 +179,9 @@ Settings now starts with a setup/health dashboard for models, voice, devices, me
 The standalone backend now uses SQLite with versioned schema initialization and one-time import of existing JSON state. Device pairing issues five-minute single-use codes and hashed scoped tokens, with persistent revocation and per-device access enforcement. A bounded inference queue handles concurrency, cancellation and deadlines. Administrative CLI commands expose health, audits and protected database snapshots. Repeated task interruptions back off and stop after three recoveries.
 
 Installable CLI: [nova-device-cli-0.12.0.tgz](nova-device-cli-0.12.0.tgz). Read [Settings](docs/SETTINGS.md) and [Backend deployment, pairing and recovery](docs/BACKEND.md). These workflows require your real provider accounts and an installed backend; no external service or device installation is implied by the web deployment.
+
+## Nova 0.13 — desktop and shared live tasks
+
+Native Electron workspace with local project chat, file browsing, Git inspection, reviewed commands and undo; shared CLI storage; backend live leases and cross-device steering/stop controls; continuous WebRTC voice and recorded Irish Spark replies; reviewed declarative skill extensions; OS-encrypted desktop connections and official release checks. See [Desktop setup and verification boundaries](docs/DESKTOP.md).
+
+Install the new CLI from [nova-device-cli-0.13.0.tgz](nova-device-cli-0.13.0.tgz). Desktop installers are produced by the [desktop workflow](https://github.com/seven0070/nova/actions/workflows/desktop.yml). Device installation, voice audition and live-provider testing remain necessary before claiming complete Hermes parity.
