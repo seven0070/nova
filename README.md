@@ -1,3 +1,5 @@
+> **Connection setup:** use `nova setup backend`, `nova setup local`, `nova setup connect`, then `nova verify`. Read [Connect everything](docs/CONNECT_EVERYTHING.md).
+
 > **Nova 0.10:** cloud/local model gateway, goals and emotional check-ins, an editable goal-focused soul, and Irish voice conversation settings. Read [the model, soul, and voice guide](docs/GATEWAY_SOUL_VOICE.md).
 
 > **Nova 0.9:** installable device CLI and authenticated, deployable model backend. Read [CLI setup](docs/CLI.md) for local coding, diff approvals, commands, and cross-device session resume. The hosted web app remains on its existing deployment.

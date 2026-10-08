@@ -19,3 +19,6 @@ next-env.d.ts
 !.env.backend.example
 
 public/pdf.worker.min.mjs
+
+
+.nova-setup/

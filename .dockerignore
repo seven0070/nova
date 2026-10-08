@@ -10,3 +10,5 @@ node_modules
 .worker/
 
 !.env.worker.example
+
+.nova-setup
