@@ -20,7 +20,7 @@ export const toolDescriptions = {
   desktop_task: 'Request configured isolated virtual-desktop adapter, never the primary desktop. Arguments: {"actions":[{"type":"screenshot"}]}. Allowed actions screenshot, click(x,y), type(text), key(key). Requires approval and a separately configured authenticated adapter.', 
   delete_file: 'Delete one workspace file only after explicit user sign-off. Arguments: {"path":"relative/path"}. Never deletes folders or system files.',
   save_skill: 'Save a reusable declarative skill. Arguments: {"name":"slug-name","description":"when to use it","steps":[{"name":"tool_name","args":{}}]}. Use only successful, verified routines. Never store secrets. No nested skills.',
-  run_skill: 'Execute a registered skill by name, observing every step and stopping on failure. Arguments: {"name":"slug-name","parameters":{"step1_path":"file.md"}}. Supply all registered parameters. Tool permissions still apply.',
+  run_skill: 'Execute a registered skill by name, observing every step and stopping on failure. Arguments: {"name":"slug-name","parameters":{"step1_path":"file.md"}}. Supply all registered parameters. Tool permissions still apply. After three persistent failures, the skill is quarantined; revalidation needs explicit review.',
   list_files: 'List workspace text files. Arguments: {}.',
   read_file: 'Read a workspace file. Arguments: {"path":"relative/path"}.',
   write_file: 'Create or update a workspace text file. Arguments: {"path":"relative/path","content":"file contents"}.',

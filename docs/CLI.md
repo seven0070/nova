@@ -7,7 +7,7 @@ Nova Code connects a local project to a hosted Nova backend. The model runs thro
 Requires Node.js 22.13 or newer. The repository archive includes a precompiled, smaller CLI package:
 
 ```sh
-npm install -g ./nova-device-cli-0.13.0.tgz
+npm install -g ./releases/nova-device-cli-0.14.0.tgz
 nova --help
 ```
 

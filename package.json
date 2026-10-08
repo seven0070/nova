@@ -1,6 +1,6 @@
 {
   "name": "nova-ai-chat",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "description": "A personal AI workspace with bring-your-own-provider connections",
   "engines": {
@@ -23,7 +23,8 @@
     "prebuild": "node scripts/prepare-assets.mjs",
     "desktop:stage": "npm run worker:build && node scripts/stage-desktop.mjs",
     "desktop:dev": "npm run desktop:stage && npm --prefix apps/desktop start",
-    "desktop:package": "npm run desktop:stage && npm --prefix apps/desktop run package"
+    "desktop:package": "npm run desktop:stage && npm --prefix apps/desktop run package",
+    "format": "prettier --write worker/gateway.ts worker/gateway worker/coding/{plugins,recall,git}.ts lib/agent/{mcp-client,skill-quality}.ts apps/desktop/*.{cjs,json} apps/desktop/ui scripts/{stage-desktop,package-cli}.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",
@@ -44,6 +45,7 @@
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "prettier": "3.6.2",
     "typescript": "5.9.3"
   },
   "bin": {

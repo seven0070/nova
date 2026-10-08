@@ -1,4 +1,4 @@
-# Nova 0.13 desktop workspace
+# Nova 0.14 desktop workspace
 
 Nova Desktop is a native Electron application that runs the same `NovaCore`, project files, permission checks and persistent session store as `nova chat`. It is separate from the hosted web app; hosting the web app does not install a desktop program.
 
@@ -47,3 +47,7 @@ nova stop SESSION_ID
 ## Verification boundaries
 
 Automated tests cover leases, concurrent checkpoint revisions, control delivery, extension integrity, traversal rejection and the desktop bridge’s origin and release restrictions. Actual operating-system installation, microphone audio, accent quality and real model-account behavior require device testing. Existing Telegram and HTTP messaging bridges remain available; this release does not claim native parity for every Hermes messaging platform, remote execution backend, plugin SDK or long-term learning evaluation.
+
+## Nova 0.14 additions
+
+The workspace includes reviewed staging/unstaging, staged-diff commits and isolated worktrees. Hooks and commit signing are disabled for these explicit native operations; changed staged content invalidates review. The Tool plugins panel manages the shared CLI MCP registry, and Search conversations queries the project FTS index. See EXTENSIONS.md for token variables and enabled-tool boundaries.

@@ -1,6 +1,6 @@
 {
   "name": "nova-desktop",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "Nova native agent and coding workspace",
   "author": "Nova contributors",
   "license": "MIT",
@@ -10,7 +10,9 @@
     "package": "electron-builder"
   },
   "dependencies": {
-    "diff": "^9.0.0"
+    "diff": "^9.0.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "ajv": "^8.20.0"
   },
   "devDependencies": {
     "electron": "43.7.7",

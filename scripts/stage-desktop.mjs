@@ -1,2 +1,40 @@
-import {readFile,mkdir,copyFile,rm} from 'node:fs/promises';import path from 'node:path';
-const root=process.cwd(),target=path.join(root,'apps/desktop/runtime');await rm(target,{recursive:true,force:true});const pending=['runner','config','store','files','remote','extensions'].map(n=>path.join(root,'.worker/worker/coding',n+'.js')),seen=new Set();pending.push(path.join(root,'.worker/lib/agent/realtime.js'));while(pending.length){const file=pending.pop();if(seen.has(file))continue;seen.add(file);const relative=path.relative(path.join(root,'.worker'),file);if(relative.startsWith('..'))throw new Error('Runtime outside build');const out=path.join(target,relative);await mkdir(path.dirname(out),{recursive:true});await copyFile(file,out);for(const [,spec] of (await readFile(file,'utf8')).matchAll(/require\("([^\"]+)"\)/g)){if(spec.startsWith('.'))pending.push(path.resolve(path.dirname(file),spec)+'.js');else if(!spec.startsWith('node:')&&spec!=='diff')throw new Error('Unexpected desktop runtime dependency '+spec);}}console.log('Staged '+seen.size+' shared runtime modules');
+import { readFile, mkdir, copyFile, rm } from "node:fs/promises";
+import path from "node:path";
+const root = process.cwd(),
+  target = path.join(root, "apps/desktop/runtime");
+await rm(target, { recursive: true, force: true });
+const pending = [
+    "runner",
+    "config",
+    "store",
+    "files",
+    "remote",
+    "extensions",
+    "git",
+    "plugins",
+  ].map((n) => path.join(root, ".worker/worker/coding", n + ".js")),
+  seen = new Set();
+pending.push(path.join(root, ".worker/lib/agent/realtime.js"));
+while (pending.length) {
+  const file = pending.pop();
+  if (seen.has(file)) continue;
+  seen.add(file);
+  const relative = path.relative(path.join(root, ".worker"), file);
+  if (relative.startsWith("..")) throw new Error("Runtime outside build");
+  const out = path.join(target, relative);
+  await mkdir(path.dirname(out), { recursive: true });
+  await copyFile(file, out);
+  for (const [, spec] of (await readFile(file, "utf8")).matchAll(
+    /require\("([^\"]+)"\)/g,
+  )) {
+    if (spec.startsWith("."))
+      pending.push(path.resolve(path.dirname(file), spec) + ".js");
+    else if (
+      !spec.startsWith("node:") &&
+      !["diff", "ajv"].includes(spec) &&
+      !spec.startsWith("@modelcontextprotocol/sdk/")
+    )
+      throw new Error("Unexpected desktop runtime dependency " + spec);
+  }
+}
+console.log("Staged " + seen.size + " shared runtime modules");

@@ -3,7 +3,7 @@ import { readFile, writeFile, rename } from 'node:fs/promises';
 import path from 'node:path';
 import { stateDir, withLock } from './lock';
 export const jobTools = ['delegate','list_files','read_file','write_file','search_memory','save_memory','fetch_url','calculate','save_skill','run_skill'];
-export type Job = { id: string; requestId?: string; sessionId?: string; reply?: {channel:string;target:string}; schedule?: Schedule; goal: string; enabled: boolean; status: 'queued'|'running'|'completed'|'failed'|'paused'; intervalMinutes: number; nextAt: number; maxSteps: number; allowedTools: string[]; commands: string[]; notify: boolean; runId?: string; result?: string; updatedAt: number };
+export type Job = { id: string; requestId?: string; sessionId?: string; reply?: {channel:string;target:string;thread?:string}; schedule?: Schedule; goal: string; enabled: boolean; status: 'queued'|'running'|'completed'|'failed'|'paused'; intervalMinutes: number; nextAt: number; maxSteps: number; allowedTools: string[]; commands: string[]; notify: boolean; runId?: string; result?: string; updatedAt: number };
 export type JobState = { jobs: Job[]; heartbeat: number; activeJobId?: string; webhookConfigured?: boolean };
 async function load(): Promise<JobState> { try { return JSON.parse(await readFile(path.join(stateDir(), 'jobs.json'), 'utf8')); } catch (e) { if ((e as NodeJS.ErrnoException).code === 'ENOENT') return { jobs: [], heartbeat: 0 }; throw e; } }
 export async function jobState() { return load(); }
