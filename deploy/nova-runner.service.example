@@ -1,0 +1,15 @@
+[Unit]
+Description=Nova hosted task dispatcher
+After=network-online.target
+[Service]
+User=nova
+WorkingDirectory=/opt/nova
+EnvironmentFile=/etc/nova/runner.env
+ExecStart=/usr/bin/node /opt/nova/.worker/worker/hosted-runner.js
+# Authentication failures require operator repair, avoiding endless retries.
+Restart=no
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+[Install]
+WantedBy=multi-user.target

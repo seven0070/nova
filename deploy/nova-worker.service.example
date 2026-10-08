@@ -1,0 +1,14 @@
+[Unit]
+Description=Nova local scheduled task worker
+After=network-online.target
+[Service]
+User=nova
+WorkingDirectory=/opt/nova
+EnvironmentFile=/etc/nova/worker.env
+ExecStart=/usr/bin/node /opt/nova/.worker/worker/main.js
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

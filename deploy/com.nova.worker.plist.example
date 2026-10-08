@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.nova.worker</string>
+<key>WorkingDirectory</key><string>/ABSOLUTE/PATH/TO/nova</string>
+<key>ProgramArguments</key><array><string>/ABSOLUTE/PATH/TO/node</string><string>--env-file=.env.worker</string><string>.worker/worker/main.js</string></array>
+<key>RunAtLoad</key><true/>
+<key>StandardOutPath</key><string>/ABSOLUTE/PATH/TO/nova-worker.log</string>
+<key>StandardErrorPath</key><string>/ABSOLUTE/PATH/TO/nova-worker-error.log</string>
+</dict></plist>

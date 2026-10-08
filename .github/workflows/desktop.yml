@@ -1,0 +1,37 @@
+name: Nova desktop installers
+on:
+  push:
+    branches: [nova-0.11, main]
+    paths: ['apps/desktop/**', 'worker/**', 'lib/agent/**', 'lib/server/**', 'scripts/stage-desktop.mjs', '.github/workflows/desktop.yml', 'package*.json']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run desktop:stage
+      - run: npm ci --prefix apps/desktop
+      - run: npm --prefix apps/desktop run package -- --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nova-desktop-${{ matrix.os }}
+          path: |
+            apps/desktop/release/*.dmg
+            apps/desktop/release/*.zip
+            apps/desktop/release/*.exe
+            apps/desktop/release/*.AppImage
+            apps/desktop/release/*.deb
+          if-no-files-found: error

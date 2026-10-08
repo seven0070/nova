@@ -1,0 +1,14 @@
+import type {ToolCall} from '../agent/types';
+import {publicHttps} from '../agent/http';
+export async function automate(call:ToolCall,signal:AbortSignal){
+ const browser=call.name==='browser_task',base=process.env[browser?'NOVA_BROWSER_ADAPTER':'NOVA_DESKTOP_ADAPTER'];
+ if(!base)throw new Error('Isolated '+(browser?'browser':'desktop')+' adapter is not configured');
+ const url=new URL(base);if(url.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(url.hostname)||url.username||url.password)throw new Error('Automation adapter must use an authenticated loopback HTTP service');
+ const token=process.env.NOVA_AUTOMATION_TOKEN;if(!token||token.length<24)throw new Error('Automation token must contain at least 24 characters');
+ const actions=call.args.actions;if(!Array.isArray(actions)||actions.length<1||actions.length>8)throw new Error('Use 1–8 actions');
+ const allowed=browser?['extract','screenshot','click','type','scroll']:['screenshot','click','type','key'];
+ for(const a of actions){if(!a||typeof a!=='object'||!allowed.includes(a.type)||JSON.stringify(a).length>10000)throw new Error('Unsupported automation action');if(['click','type'].includes(a.type)&&browser&&(typeof a.selector!=='string'||a.selector.length>1000))throw new Error('CSS selector required');if(a.type==='type'&&(typeof a.text!=='string'||a.text.length>8000))throw new Error('Text required');if(a.type==='scroll'&&(!Number.isFinite(a.pixels)||Math.abs(a.pixels)>5000))throw new Error('Invalid scroll distance');if(!browser&&a.type==='click'&&(!Number.isFinite(a.x)||!Number.isFinite(a.y)||a.x<0||a.y<0||a.x>4096||a.y>4096))throw new Error('Invalid desktop coordinates');if(!browser&&a.type==='key'&&(typeof a.key!=='string'||!/^[a-zA-Z0-9+_-]{1,40}$/.test(a.key)))throw new Error('Invalid key');}
+ if(browser){const target=publicHttps(String(call.args.url));const domains=(process.env.NOVA_BROWSER_DOMAINS||'').split(',').map(d=>d.trim().toLowerCase()).filter(Boolean);if(!domains.includes(target.hostname))throw new Error('Browser domain not allowlisted');}
+ const response=await fetch(url,{method:'POST',redirect:'error',signal:AbortSignal.any([signal,AbortSignal.timeout(60000)]),headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({kind:browser?'browser':'desktop',...call.args})});if(!response.ok)throw new Error('Automation adapter HTTP '+response.status);
+ const reader=response.body?.getReader();if(!reader)throw new Error('No automation result');let text='',bytes=0;const decoder=new TextDecoder();try{while(true){const next=await reader.read();if(next.done)break;bytes+=next.value.length;if(bytes>1500000)throw new Error('Automation response too large');text+=decoder.decode(next.value,{stream:true});}}finally{await reader.cancel().catch(()=>{});}return JSON.parse(text);
+}

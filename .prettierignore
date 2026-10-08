@@ -1,0 +1,6 @@
+node_modules
+.worker
+.next
+apps/desktop/runtime
+apps/desktop/release
+releases

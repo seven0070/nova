@@ -1,0 +1,57 @@
+{
+  "name": "nova-desktop",
+  "version": "0.14.0",
+  "description": "Nova native agent and coding workspace",
+  "author": "Nova contributors",
+  "license": "MIT",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "dependencies": {
+    "diff": "^9.0.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "ajv": "^8.20.0"
+  },
+  "devDependencies": {
+    "electron": "43.7.7",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.nova.agent",
+    "productName": "Nova",
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "policy.cjs",
+      "ui/**",
+      "runtime/**",
+      "package.json"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Nova uses your microphone only when you start a voice conversation."
+      }
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
+    }
+  }
+}

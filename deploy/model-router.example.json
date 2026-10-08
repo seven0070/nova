@@ -1,0 +1,10 @@
+{
+  "mode": "local-first",
+  "fallback": false,
+  "routes": [
+    {"id":"ollama","name":"Local Ollama","base":"http://localhost:11434/v1","model":"replace-with-installed-model","protocol":"openai","role":"general","priority":60,"enabled":true},
+    {"id":"lmstudio","name":"Local LM Studio","base":"http://localhost:1234/v1","model":"replace-with-loaded-model","protocol":"openai","role":"coding","priority":70,"enabled":false},
+    {"id":"cloud-code","name":"Cloud coding model","base":"https://api.anthropic.com/v1","model":"replace-with-available-model-id","protocol":"anthropic","keyEnv":"NOVA_ANTHROPIC_KEY","role":"coding","priority":80,"enabled":false},
+    {"id":"cloud-router","name":"OpenRouter","base":"https://openrouter.ai/api/v1","model":"replace-with-provider/model-id","protocol":"openai","keyEnv":"NOVA_OPENROUTER_KEY","role":"reasoning","priority":70,"enabled":false}
+  ]
+}

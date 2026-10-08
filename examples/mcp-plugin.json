@@ -1,0 +1,9 @@
+{
+  "id": "research",
+  "name": "Research tools",
+  "base": "https://your-mcp.example/mcp",
+  "tokenEnv": "NOVA_MCP_RESEARCH_TOKEN",
+  "tools": [
+    "search"
+  ]
+}

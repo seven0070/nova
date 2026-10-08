@@ -1,0 +1,121 @@
+import {
+  readFile,
+  mkdtemp,
+  mkdir,
+  copyFile,
+  writeFile,
+  rm,
+} from "node:fs/promises";
+import path from "node:path";
+import os from "node:os";
+import { fileURLToPath } from "node:url";
+import { execFileSync } from "node:child_process";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."),
+  pkg = JSON.parse(await readFile(path.join(root, "package.json"), "utf8")),
+  stage = await mkdtemp(path.join(os.tmpdir(), "nova-cli-package-"));
+try {
+  const pending = [path.join(root, ".worker/worker/nova.js")],
+    seen = new Set(),
+    external = new Set();
+  while (pending.length) {
+    const file = pending.pop();
+    if (seen.has(file)) continue;
+    seen.add(file);
+    const relative = path.relative(root, file);
+    if (relative.startsWith("..")) throw new Error("Module outside repository");
+    const target = path.join(stage, relative);
+    await mkdir(path.dirname(target), { recursive: true });
+    await copyFile(file, target);
+    const source = await readFile(file, "utf8");
+    for (const match of source.matchAll(/require\("([^\"]+)"\)/g)) {
+      const spec = match[1];
+      if (spec.startsWith(".")) {
+        let dependency = path.resolve(path.dirname(file), spec);
+        if (!path.extname(dependency)) dependency += ".js";
+        pending.push(dependency);
+      } else if (!spec.startsWith("node:"))
+        external.add(
+          spec.startsWith("@")
+            ? spec.split("/").slice(0, 2).join("/")
+            : spec.split("/")[0],
+        );
+    }
+  }
+  if (
+    [...external].some(
+      (name) => !["diff", "@modelcontextprotocol/sdk", "ajv"].includes(name),
+    )
+  )
+    throw new Error("Review new CLI runtime dependencies before packaging");
+  await mkdir(path.join(stage, "bin"));
+  await mkdir(path.join(stage, "deploy"));
+  await copyFile(
+    path.join(root, "bin/nova.cjs"),
+    path.join(stage, "bin/nova.cjs"),
+  );
+  await copyFile(path.join(root, "docs/CLI.md"), path.join(stage, "README.md"));
+  await mkdir(path.join(stage, "docs"));
+  for (const name of [
+    "BACKEND.md",
+    "CONNECT_EVERYTHING.md",
+    "CONTINUITY.md",
+    "SETTINGS.md",
+    "DESKTOP.md",
+    "GATEWAY.md",
+    "EXTENSIONS.md",
+    "ARCHITECTURE.md",
+    "CAPABILITIES.md",
+  ])
+    await copyFile(
+      path.join(root, "docs", name),
+      path.join(stage, "docs", name),
+    );
+  await copyFile(
+    path.join(root, ".env.backend.example"),
+    path.join(stage, ".env.backend.example"),
+  );
+  await copyFile(
+    path.join(root, "deploy/model-router.example.json"),
+    path.join(stage, "deploy/model-router.example.json"),
+  );
+  await writeFile(
+    path.join(stage, "package.json"),
+    JSON.stringify(
+      {
+        name: "nova-device-cli",
+        version: pkg.version,
+        description:
+          "Nova device coding agent and authenticated model router backend",
+        bin: { nova: "bin/nova.cjs" },
+        engines: pkg.engines,
+        files: [
+          "bin",
+          ".worker",
+          "deploy",
+          "docs",
+          "README.md",
+          ".env.backend.example",
+        ],
+        dependencies: Object.fromEntries(
+          [...external].map((name) => [name, pkg.dependencies[name]]),
+        ),
+      },
+      null,
+      2,
+    ) + "\n",
+  );
+  await mkdir(path.join(root, "releases"), { recursive: true });
+  execFileSync(
+    "npm",
+    [
+      "pack",
+      "--pack-destination",
+      path.join(root, "releases"),
+      "--ignore-scripts",
+    ],
+    { cwd: stage, stdio: "inherit" },
+  );
+  console.log("Compiled CLI modules: " + seen.size);
+} finally {
+  await rm(stage, { recursive: true, force: true });
+}

@@ -1,0 +1,2 @@
+import {sameOrigin} from '../../../lib/agent/http';import {localRequest,saveRecord} from '../../../lib/server/local-workspace';import {auditRecord} from '../../../lib/agent/approval';
+export async function POST(req:Request){if(!localRequest(req)||!sameOrigin(req,true))return Response.json({error:'Local same-origin request required'},{status:403});try{const record=await auditRecord(await req.json(),'browser-reported');await saveRecord(record);return Response.json({saved:true});}catch(e){return Response.json({error:(e as Error).message},{status:400});}}

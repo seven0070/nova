@@ -1,0 +1,8 @@
+# Run Caddy on the host, point your domain to this host, and replace the domain.
+# Caddy terminates HTTPS; the backend port remains loopback-only.
+nova-backend.your-domain.com {
+    request_body {
+        max_size 2MB
+    }
+    reverse_proxy 127.0.0.1:4319
+}

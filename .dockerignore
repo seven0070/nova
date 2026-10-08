@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.github
+.env*
+*.log
+*.tsbuildinfo
+.nova
+
+.worker/
+
+!.env.worker.example
+
+.nova-setup

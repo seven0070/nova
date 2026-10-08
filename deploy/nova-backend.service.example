@@ -1,0 +1,16 @@
+[Unit]
+Description=Nova authenticated model backend
+After=network-online.target
+[Service]
+User=nova
+WorkingDirectory=/opt/nova
+EnvironmentFile=/etc/nova/backend.env
+ExecStart=/usr/bin/node /opt/nova/bin/nova.cjs backend
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/nova
+[Install]
+WantedBy=multi-user.target
