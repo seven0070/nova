@@ -18,7 +18,7 @@ Do not populate mappings from incoming message text. Shared sessions retain conv
 | --- | --- | --- |
 | Telegram | `NOVA_TELEGRAM_TOKEN` | Existing long polling and voice transcription |
 | Discord | `NOVA_DISCORD_TOKEN`, `NOVA_DISCORD_CHANNELS` comma-separated IDs | Bot REST polling; only configured channels; ignore bot authors; suppress reply mentions |
-| Slack | `NOVA_SLACK_APP_TOKEN`, `NOVA_SLACK_BOT_TOKEN` | Socket Mode app connections; enable message/app_mention subscriptions and appropriate read/chat scopes |
+| Slack | `NOVA_SLACK_APP_TOKEN`, `NOVA_SLACK_BOT_TOKEN`, optional `NOVA_SLACK_CHANNELS` | Socket Mode app connections; enable message/app_mention subscriptions and appropriate read/chat scopes |
 | WhatsApp Business | `NOVA_WHATSAPP_TOKEN`, `NOVA_WHATSAPP_PHONE_ID`, `NOVA_WHATSAPP_APP_SECRET`, `NOVA_WHATSAPP_VERIFY_TOKEN`, `NOVA_META_API_VERSION` | Signed Cloud API webhooks and text replies |
 | Signal | `NOVA_SIGNAL_URL`, optional `NOVA_SIGNAL_ACCOUNT` | Local signal-cli daemon HTTP SSE/RPC; separately install/link signal-cli |
 
@@ -31,3 +31,5 @@ For WhatsApp, expose only `/webhooks/whatsapp` through an HTTPS reverse proxy to
 ## Verification
 
 Tests use synthetic provider envelopes and intercepted requests. They do not send live messages or establish your bot accounts. Inspect platform permissions, then test one linked message and reply before unattended use. Tokens stay in a private environment and are not printed by normalized adapters.
+
+Slack accepts only DM channel IDs by default. Set NOVA_SLACK_CHANNELS to explicit approved channel IDs to enable shared-channel ingress; consider whether personal shared-session history belongs in that channel.

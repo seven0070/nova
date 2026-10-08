@@ -21,6 +21,8 @@ const methods = [
   "recall",
   "gitChange",
   "plugins",
+  "directModel",
+  "pluginKey",
   "installPlugin",
   "removePlugin",
   "voiceKey",

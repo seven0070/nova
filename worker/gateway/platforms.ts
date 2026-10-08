@@ -229,3 +229,14 @@ export async function deliver(
     );
   } else throw new Error("Unsupported reply channel");
 }
+
+export function slackChannelAllowed(
+  channel: string,
+  configured = process.env.NOVA_SLACK_CHANNELS || "",
+) {
+  const allow = configured
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return allow.length ? allow.includes(channel) : /^D[A-Z0-9]+$/.test(channel);
+}

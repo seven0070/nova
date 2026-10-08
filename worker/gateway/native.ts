@@ -6,6 +6,7 @@ import { linkedSession } from "../../lib/server/sessions";
 import {
   discordEnvelope,
   slackEnvelope,
+  slackChannelAllowed,
   signalEnvelope,
   signalURL,
   platformJSON,
@@ -136,7 +137,11 @@ export async function slack(accept: Accept, signal: AbortSignal) {
         }
         if (!data.envelope_id) return;
         const e = slackEnvelope(data.payload);
-        if (!e || !linkedSession(e.channel, e.sender)) {
+        if (
+          !e ||
+          !slackChannelAllowed(e.reply!.target) ||
+          !linkedSession(e.channel, e.sender)
+        ) {
           socket.send(JSON.stringify({ envelope_id: data.envelope_id }));
           return;
         }

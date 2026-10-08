@@ -45,8 +45,11 @@ function message(role, text) {
 async function render(next) {
   state = next;
   $("status").textContent =
-    (next.connected ? "Backend connected" : "Backend not connected") +
-    (next.running ? " · Running" : "");
+    (next.connected
+      ? "Backend connected"
+      : next.modelReady
+        ? "Device model configured"
+        : "Model not configured") + (next.running ? " · Running" : "");
   $("project-name").textContent = next.project || "";
   $("title").textContent = next.session?.title || "Nova workspace";
   $("sessions").replaceChildren();
@@ -434,6 +437,16 @@ $("plugins").onclick = busy(async () => {
         const text = document.createElement("p");
         text.textContent =
           p.name + " · " + p.base + " · enabled: " + p.tools.join(", ");
+        if (p.tokenEnv) {
+          const key = input(body, "Token for " + p.name, "password");
+          body.append(
+            button("Save plugin token", async () => {
+              const result = await nova.pluginKey(p.id, key.value);
+              key.value = "";
+              $("activity").textContent = result.persistence;
+            }),
+          );
+        }
         body.append(
           text,
           button("Remove " + p.id, async () => {
@@ -478,6 +491,35 @@ $("worktree").onclick = () => {
         " at " +
         result.path +
         ". Open this folder to work in its isolated session.";
+    }),
+  );
+};
+
+$("direct-model").onclick = () => {
+  const body = modal("Direct cloud or local model"),
+    base = input(body, "API base, e.g. http://localhost:11434/v1"),
+    key = input(body, "API key (optional for local models)", "password"),
+    model = input(body, "Model ID"),
+    protocol = document.createElement("select");
+  for (const name of ["openai", "anthropic"]) {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent =
+      name === "openai" ? "OpenAI-compatible" : "Anthropic Messages";
+    protocol.append(option);
+  }
+  body.append(
+    protocol,
+    button("Use this model", async () => {
+      const result = await nova.directModel({
+        base: base.value,
+        key: key.value,
+        model: model.value,
+        protocol: protocol.value,
+      });
+      key.value = "";
+      body.textContent = result.persistence;
+      await render(await nova.state());
     }),
   );
 };

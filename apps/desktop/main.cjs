@@ -47,7 +47,9 @@ let win,
   current,
   active,
   client,
-  speechKey = "";
+  speechKey = "",
+  directSettings,
+  pluginTokens = {};
 const registry = new SkillExtensions();
 const emit = (type, data) => {
   if (win && !win.isDestroyed())
@@ -82,6 +84,7 @@ async function state() {
     connected: !!client,
     backend: client?.config.backend,
     voiceReady: !!speechKey,
+    modelReady: !!client || !!process.env.NOVA_MODEL_BASE,
     running: !!active,
   };
 }
@@ -97,7 +100,12 @@ async function secretSave() {
   await fs.writeFile(
     path.join(app.getPath("userData"), "connections.enc"),
     safeStorage.encryptString(
-      JSON.stringify({ remote: client?.config, speechKey }),
+      JSON.stringify({
+        remote: client?.config,
+        speechKey,
+        directSettings,
+        pluginTokens,
+      }),
     ),
     { mode: 0o600 },
   );
@@ -231,6 +239,44 @@ handler("run", async (goal, mode = "plan") => {
 handler("recall", async (query) => {
   needProject();
   return store.search(policy.checkText(query, 500));
+});
+handler("directModel", async (input) => {
+  idle();
+  const base = backendUrl(policy.checkText(input?.base, 2000)),
+    model = policy.checkText(input?.model, 200),
+    key = typeof input?.key === "string" ? input.key : "";
+  if (key.length > 5000 || !["openai", "anthropic"].includes(input?.protocol))
+    throw new Error("Invalid provider settings");
+  directSettings = { base, model, key, protocol: input.protocol };
+  process.env.NOVA_MODEL_BASE = base;
+  process.env.NOVA_MODEL = model;
+  process.env.NOVA_MODEL_KEY = key;
+  process.env.NOVA_MODEL_PROTOCOL = input.protocol;
+  client = undefined;
+  let persistence;
+  try {
+    await secretSave();
+    persistence = "OS-encrypted";
+  } catch (e) {
+    persistence = e.message;
+  }
+  return { ready: true, persistence };
+});
+handler("pluginKey", async (id, key) => {
+  idle();
+  const plugin = (await new DevicePlugins().list()).find((p) => p.id === id);
+  if (!plugin?.tokenEnv)
+    throw new Error("This plugin has no configured token variable");
+  pluginTokens[plugin.tokenEnv] = policy.checkText(key, 5000);
+  process.env[plugin.tokenEnv] = pluginTokens[plugin.tokenEnv];
+  let persistence;
+  try {
+    await secretSave();
+    persistence = "OS-encrypted";
+  } catch (e) {
+    persistence = e.message;
+  }
+  return { ready: true, persistence };
 });
 handler("plugins", () => new DevicePlugins().list());
 handler("installPlugin", async () => {
@@ -508,6 +554,17 @@ app.whenReady().then(async () => {
       const saved = JSON.parse(safeStorage.decryptString(bytes));
       if (saved.remote) client = new BackendClient(saved.remote);
       speechKey = saved.speechKey || "";
+      directSettings = saved.directSettings;
+      pluginTokens = saved.pluginTokens || {};
+      for (const [name, key] of Object.entries(pluginTokens))
+        if (/^NOVA_MCP_[A-Z0-9_]{1,80}$/.test(name) && typeof key === "string")
+          process.env[name] = key;
+      if (directSettings) {
+        process.env.NOVA_MODEL_BASE = backendUrl(directSettings.base);
+        process.env.NOVA_MODEL = directSettings.model;
+        process.env.NOVA_MODEL_KEY = directSettings.key;
+        process.env.NOVA_MODEL_PROTOCOL = directSettings.protocol;
+      }
     }
   } catch {}
   await win.loadURL("nova://app/index.html");

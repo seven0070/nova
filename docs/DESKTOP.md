@@ -51,3 +51,5 @@ Automated tests cover leases, concurrent checkpoint revisions, control delivery,
 ## Nova 0.14 additions
 
 The workspace includes reviewed staging/unstaging, staged-diff commits and isolated worktrees. Hooks and commit signing are disabled for these explicit native operations; changed staged content invalidates review. The Tool plugins panel manages the shared CLI MCP registry, and Search conversations queries the project FTS index. See EXTENSIONS.md for token variables and enabled-tool boundaries.
+
+Use **Connect a model directly** to configure OpenAI-compatible or Anthropic inference without a backend, including loopback Ollama/LM Studio endpoints. The backend remains optional for shared-device memory and live controls. The Tool plugins panel accepts plugin tokens into OS-encrypted storage when available; it never places them in the plugin manifest.
