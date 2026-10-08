@@ -8,7 +8,7 @@ Nova is an independent implementation. Hermes Agent is the capability reference,
 
 | Interface | Setup |
 | --- | --- |
-| Web app | [Open Nova](https://nova-ai-chat.sanathpatil8861.chatgpt.site), then add model connections in Settings |
+| Web app | Open your deployed Nova instance, then add model connections in Settings |
 | Desktop | [Installer builds](https://github.com/seven0070/nova/actions/workflows/desktop.yml) · [Desktop guide](docs/DESKTOP.md) |
 | Coding CLI | `npm install -g ./releases/nova-device-cli-0.14.0.tgz`, then `nova setup connect` or `nova setup local` |
 | Model backend | [Deployment, device pairing and recovery](docs/BACKEND.md) |

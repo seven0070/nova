@@ -1,6 +1,6 @@
 # Connect Nova for daily use
 
-Use the code in `seven0070/nova`, branch `nova-0.11`. The existing hosted web UI is https://nova-ai-chat.sanathpatil8861.chatgpt.site.
+Use the code in `seven0070/nova`, branch `nova-0.11`. Use your deployed web instance. Its address is kept outside the public repository.
 
 ## Local inference on a MacBook Air M3
 
