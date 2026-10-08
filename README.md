@@ -171,3 +171,11 @@ See [docs/OPERATORS.md](docs/OPERATORS.md) for automatic portable skills, shared
 ## Nova 0.11
 
 Shared web–CLI context and conversation copies, continuous voice with interruption, measured route selection, reviewed learning and service setup are documented in [CONTINUITY.md](docs/CONTINUITY.md). Configure and test your own provider accounts and deployment before running unattended.
+
+## Nova 0.12 — settings and backend operations
+
+Settings now starts with a setup/health dashboard for models, voice, devices, memory, background work and daily usage. Model connections attempt discovery when saved; inference checks and timestamps distinguish configured accounts from verified model responses. A server-enforced daily call ceiling covers chat and background work. Devices & memory includes hub trust controls, personal backup export and explicit recovery of the copy saved before a hub pull.
+
+The standalone backend now uses SQLite with versioned schema initialization and one-time import of existing JSON state. Device pairing issues five-minute single-use codes and hashed scoped tokens, with persistent revocation and per-device access enforcement. A bounded inference queue handles concurrency, cancellation and deadlines. Administrative CLI commands expose health, audits and protected database snapshots. Repeated task interruptions back off and stop after three recoveries.
+
+Installable CLI: [nova-device-cli-0.12.0.tgz](nova-device-cli-0.12.0.tgz). Read [Settings](docs/SETTINGS.md) and [Backend deployment, pairing and recovery](docs/BACKEND.md). These workflows require your real provider accounts and an installed backend; no external service or device installation is implied by the web deployment.

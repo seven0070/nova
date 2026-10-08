@@ -1,0 +1,3 @@
+import {owner} from '../../../lib/server/state';import {settingsOverview,saveLimits} from '../../../lib/server/settings';import {sameOrigin,boundedUpload} from '../../../lib/agent/http';
+export async function GET(req:Request){try{return Response.json(await settingsOverview(await owner(req)),{headers:{'Cache-Control':'no-store'}});}catch{return Response.json({error:'Unable to load settings'},{status:400});}}
+export async function POST(req:Request){try{if(!sameOrigin(req,true))return Response.json({error:'Same origin required'},{status:403});const who=await owner(req),input:any=await(await boundedUpload(req,10000)).json();return Response.json({limits:await saveLimits(who,input.limits)});}catch(e){return Response.json({error:(e as Error).message},{status:400});}}

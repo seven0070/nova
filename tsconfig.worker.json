@@ -28,6 +28,8 @@
     "app/api/connections/route.ts",
     "app/api/device-hub/route.ts",
     "app/api/learning/route.ts",
-    "app/api/realtime/route.ts"
+    "app/api/realtime/route.ts",
+    "app/api/settings/route.ts",
+    "app/api/connection-check/route.ts"
   ]
 }
